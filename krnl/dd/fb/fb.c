@@ -11,9 +11,7 @@
 #include <boot/boot.h>
 #include <dd/fb/fb.h>
 
-#define NIGHTERM_MALLOC_IS_AVAILABLE
-#include <nighterm-extended/nighterm.h>
-#include <nighterm-extended/backends/vga.h>
+#include <nighterm/nighterm.h>
 
 #include <luxe.h>
 
@@ -439,10 +437,10 @@ void fb_init()
 		g_fb_info.addr, g_fb_info.width, g_fb_info.height, g_fb_info.pitch,
 		g_fb_info.bpp);
 
-	if (nighterm_initialize(&default_font, g_fb_info.addr, g_fb_info.width,
-					g_fb_info.height, g_fb_info.pitch, g_fb_info.bpp, kmalloc) != NIGHTERM_SUCCESS) {
+	if (init_nighterm(&default_font, g_fb_info.addr, g_fb_info.width,
+					g_fb_info.height, g_fb_info.pitch, g_fb_info.bpp) != NIGHTERM_SUCCESS) {
 						panic(2);
-					}
+  }
 	g_fb_init = true;
 
   klog("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -458,6 +456,6 @@ void putpixel(int x, int y, uint32_t color)
 void fb_write(char *msg)
 {
   while (*msg) {
-	nighterm_write(*msg++);
+	  nighterm_write(*msg++);
   }
 }
