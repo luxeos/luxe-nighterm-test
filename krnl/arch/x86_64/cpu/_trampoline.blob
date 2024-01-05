@@ -1,0 +1,72 @@
+;
+; LuxeOS (c) 2023 by Jozef Nagy
+;
+; LuxeOS is licensed under a
+; Creative Commons Attribution-NoDerivatives 4.0 International License.
+;
+; You should have received a copy of the license along with this
+; work. If not, see <http://creativecommons.org/licenses/by-nd/4.0/>.
+;
+;
+
+[bits 16]
+real_entry:
+	cli
+	jmp load_gdt32
+
+gdt32:
+	dq 0x0000000000000000
+	dq 0x00df9a000000ffff
+	dq 0x00df92000000ffff
+
+gdtr32:
+	dw 23
+	dd 0x1000 + gdt32
+
+gdt64:
+	dq 0x0000000000000000
+	dq 0x00af9a000000ffff
+	dq 0x008f92000000ffff
+
+gdtr64:
+	dw 23
+	dq 0x1000 + gdt64
+
+load_gdt32:
+	lgdt [cs:gdtr32]
+	mov eax, cr0
+	or eax, 0x1
+	mov cr0, eax
+	jmp dword 0x08:0x1000 + prot_entry
+
+[bits 32]
+prot_entry:
+	mov eax, 0x10
+	mov es, eax
+	mov ss, eax
+	mov ds, eax
+	mov fs, eax
+	mov gs, eax
+	mov eax, [0xfd0]
+	mov cr3, eax
+	mov eax, cr4
+	or eax, 1 << 5
+	mov cr4, eax
+	; long mode
+	mov ecx, 0xc0000080
+	rdmsr
+	or eax, 1 << 8
+	wrmsr
+	mov eax, cr0
+	or eax, 1 << 31
+	mov cr0, eax
+	lgdt [0x1000 + gdtr64]
+	jmp 0x08:0x1000 + long_entry
+
+[bits 64]
+long_entry:
+	lidt [0xfa0]
+	mov rsp, [0xfb0]
+	mov rdi, [0xfe0]
+	lock add word [0xff0], 1
+	call [0xfc0]

@@ -1,0 +1,7 @@
+[submodule "ex/limine"]
+	path = ex/limine
+	url = https://github.com/limine-bootloader/limine.git
+	branch = v5.x-branch-binary
+[submodule "ex/kconfiglib"]
+	path = ex/kconfiglib
+	url = https://github.com/schkwve/Kconfiglib

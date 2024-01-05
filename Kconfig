@@ -1,0 +1,38 @@
+mainmenu "LuxeOS Configuration"
+
+choice ARCH
+	bool "Target Architecture"
+	config X86_64
+		bool "x86_64"
+	---help---
+	Build target architecture.
+endchoice
+
+menu "CPU"
+	config CPU_MAX
+		int "Maximum supported CPUs"
+		default 64
+		---help---
+		Maximum number of supported CPUs.
+endmenu
+
+menu "Scheduling"
+	config TIMESLICE
+		int "Timeslice"
+		default 1000000
+		---help---
+		Time frame for every process in nanoseconds.
+		Default translates to 1 millisecond for each process.
+endmenu
+
+choice BUILD_TYPE
+	bool "Build Type"
+	config DEBUG
+		bool "Debug"
+		---help---
+		Stripped debug information, serial logging and verbose mode are disabled by default.
+	config RELEASE
+		bool "Release"
+		---help---
+		Debug information is kept in the kernel binary, serial logging and verbose mode are enabled.
+endchoice
